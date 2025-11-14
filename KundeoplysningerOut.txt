@@ -1,0 +1,41 @@
+Kunde-ID: 0000000001
+Navn: Lars Madsen
+Adresse: Hovedgade 12A
+Kobenhavn 2100 (DK)
+Telefon: 12345678
+Email: lars.madsen@example.com
+Konto: 0000000001  Lønkonto  125.05 0DK
+Konto: 0000000002  Opsparing  500000.00 DKK
+
+Kunde-ID: 0000000002
+Navn: Anna Jensen
+Adresse: Vestergade 7B
+Aarhus 8000 (DK)
+Telefon: 22334455
+Email: anna.jensen@example.com
+Konto: 0000000003  Budgetkonto  2300.75 EUR
+
+Kunde-ID: 0000000003
+Navn: Peter Sorensen
+Adresse: Ostergade 14
+Odense 5000 (DK)
+Telefon: 33445566
+Email: peter.sorensen@example.com
+Konto: 0000000004  Rejsekonto  15.00 USD
+
+Kunde-ID: 0000000004
+Navn: Maria Hansen
+Adresse: Kongevej 25
+Aalborg 9000 (DK)
+Telefon: 44556677
+Email: maria.hansen@example.com
+Konto: 0000000005  Huslån  50000.00 0SE
+
+Kunde-ID: 0000000005
+Navn: Thomas Nielsen
+Adresse: Gadevej 8
+Esbjerg 6700 (DK)
+Telefon: 55667788
+Email: thomas.nielsen@example.com
+Konto: 0000000006  Kreditkonto  750.00 GBP
+

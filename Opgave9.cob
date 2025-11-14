@@ -1,0 +1,172 @@
+>>SOURCE FORMAT FREE
+IDENTIFICATION DIVISION.
+PROGRAM-ID. OPGAVE9.
+
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+    SELECT Kundefil
+        ASSIGN TO "Kundeoplysninger.txt"
+        ORGANIZATION IS LINE SEQUENTIAL.
+
+    SELECT Kontofil
+        ASSIGN TO "KontoOpl.txt"
+        ORGANIZATION IS LINE SEQUENTIAL.
+
+    SELECT UdFil
+        ASSIGN TO "KundeoplysningerOut.txt"
+        ORGANIZATION IS LINE SEQUENTIAL.
+
+DATA DIVISION.
+
+FILE SECTION.
+
+FD Kundefil.
+01 RAW-KUNDE PIC X(269).
+01 KUNDEOPL REDEFINES RAW-KUNDE.
+   COPY "KUNDER.cpy".
+
+FD Kontofil.
+01 RAW-KONTO PIC X(52).
+01 KONTO-REC REDEFINES RAW-KONTO.
+   COPY "KONTOOPL.cpy".
+
+FD UdFil.
+01 UDLINJE.
+   02 OUT-TEXT PIC X(200).
+
+WORKING-STORAGE SECTION.
+01 EOF-KUNDE   PIC X VALUE "N".
+01 EOF-KONTO   PIC X VALUE "N".
+01 ANTAL-KONTI PIC 9(3) VALUE 0.
+01 IDX-KONTO   PIC 9(3) VALUE 0.
+01 DISP-BALANCE PIC Z(7)9.99.
+
+
+*> Konto-array i memory (samme struktur som KONTOOPL.cpy)
+01 KONTOTABEL.
+   02 KONTI OCCURS 50 TIMES.
+      03 T-KUNDE-ID   PIC X(10).
+      03 T-KONTO-ID   PIC X(10).
+      03 T-KONTO-TYPE PIC X(20).
+      03 T-BALANCE    PIC ZZZZZZ9V99.
+      03 T-VALUTA-KD  PIC X(3).
+
+PROCEDURE DIVISION.
+
+    *> 1) Load all accounts from KontoOpl.txt into array
+    OPEN INPUT Kontofil
+
+    MOVE "N" TO EOF-KONTO
+    PERFORM UNTIL EOF-KONTO = "Y"
+        READ Kontofil
+            AT END
+                MOVE "Y" TO EOF-KONTO
+            NOT AT END
+                ADD 1 TO ANTAL-KONTI
+                MOVE KUNDE-ID   OF KONTO-REC TO T-KUNDE-ID(ANTAL-KONTI)
+                MOVE KONTO-ID   OF KONTO-REC TO T-KONTO-ID(ANTAL-KONTI)
+                MOVE KONTO-TYPE OF KONTO-REC TO T-KONTO-TYPE(ANTAL-KONTI)
+                MOVE BALANCE    OF KONTO-REC TO T-BALANCE(ANTAL-KONTI)
+                MOVE VALUTA-KD  OF KONTO-REC TO T-VALUTA-KD(ANTAL-KONTI)
+        END-READ
+    END-PERFORM
+
+    CLOSE Kontofil
+
+    *> 2) Process all customers and use the konto array
+    OPEN INPUT  Kundefil
+         OUTPUT UdFil
+
+    MOVE "N" TO EOF-KUNDE
+
+    PERFORM UNTIL EOF-KUNDE = "Y"
+        READ Kundefil
+            AT END
+                MOVE "Y" TO EOF-KUNDE
+            NOT AT END
+
+                PERFORM WRITE-CUSTOMER-BLOCK
+
+                PERFORM VARYING IDX-KONTO FROM 1 BY 1
+                        UNTIL IDX-KONTO > ANTAL-KONTI
+                    IF T-KUNDE-ID(IDX-KONTO) = KUNDEID OF KUNDEOPL
+                        PERFORM WRITE-ACCOUNT-BLOCK
+                    END-IF
+                END-PERFORM
+
+                MOVE SPACES TO OUT-TEXT
+                WRITE UDLINJE
+
+        END-READ
+    END-PERFORM
+
+    CLOSE Kundefil UdFil
+    STOP RUN.
+
+*> =====================================================
+*>  WRITE CUSTOMER DATA BLOCK
+*> =====================================================
+WRITE-CUSTOMER-BLOCK.
+    MOVE SPACES TO OUT-TEXT
+    STRING "Kunde-ID: " FUNCTION TRIM(KUNDEID OF KUNDEOPL)
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+
+    MOVE SPACES TO OUT-TEXT
+    STRING "Navn: " FUNCTION TRIM(FORNAVN OF KUNDEOPL)
+           " " FUNCTION TRIM(EFTERNAVN OF KUNDEOPL)
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+
+    MOVE SPACES TO OUT-TEXT
+    STRING "Adresse: "
+           FUNCTION TRIM(VEJNAVN OF ADRESSE OF KUNDEOPL)
+           " " FUNCTION TRIM(HUSNR OF ADRESSE OF KUNDEOPL)
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+
+    MOVE SPACES TO OUT-TEXT
+    STRING FUNCTION TRIM(BYNAVN OF ADRESSE OF KUNDEOPL)
+           " " FUNCTION TRIM(POSTNR OF ADRESSE OF KUNDEOPL)
+           " (" FUNCTION TRIM(LANDKODE OF ADRESSE OF KUNDEOPL) ")"
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+
+    MOVE SPACES TO OUT-TEXT
+    STRING "Telefon: " FUNCTION TRIM(TELEFON OF KONTAKTOPL OF KUNDEOPL)
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+
+    MOVE SPACES TO OUT-TEXT
+    STRING "Email: " FUNCTION TRIM(EMAIL OF KONTAKTOPL OF KUNDEOPL)
+        INTO OUT-TEXT
+    END-STRING
+    WRITE UDLINJE
+    .
+
+*> =====================================================
+*>  WRITE ACCOUNT BLOCK
+*> =====================================================
+WRITE-ACCOUNT-BLOCK.
+  MOVE T-BALANCE(IDX-KONTO) TO DISP-BALANCE
+
+MOVE SPACES TO OUT-TEXT
+STRING
+    "Konto: "
+    FUNCTION TRIM(T-KONTO-ID  (IDX-KONTO))   DELIMITED BY SIZE
+    "  "                                     DELIMITED BY SIZE
+    FUNCTION TRIM(T-KONTO-TYPE(IDX-KONTO))  DELIMITED BY SIZE
+    "  "                                     DELIMITED BY SIZE
+    FUNCTION TRIM(DISP-BALANCE)             DELIMITED BY SIZE
+    " "                                      DELIMITED BY SIZE
+    FUNCTION TRIM(T-VALUTA-KD (IDX-KONTO))  DELIMITED BY SIZE
+INTO OUT-TEXT
+END-STRING
+WRITE UDLINJE
+    .

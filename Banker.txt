@@ -1,0 +1,6 @@
+01 BANK-REC.
+   02 REG-NR        PIC X(4).      *> 4 tegn
+   02 BANKNAVN      PIC X(30).     *> 30 tegn
+   02 BANKADRESSE   PIC X(50).     *> 50 tegn
+   02 TELEFON       PIC X(15).     *> 15 tegn
+   02 EMAIL         PIC X(30).     *> 30 tegn
