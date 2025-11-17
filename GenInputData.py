@@ -85,7 +85,7 @@ def generate_bank_data():
 
 # Generér bankfil
 bank_data = generate_bank_data()
-with open(BANK_FILE, "w") as bank_file:
+with open(BANK_FILE, "w", encoding="utf-8", newline="") as bank_file:
     for reg_number, bank_name, bank_address, phone_number, email in bank_data:
         bank_record = (
             f"{reg_number:<4}"         # Registreringsnummer (4 tegn)
