@@ -90,7 +90,7 @@ with open(BANK_FILE, "w", encoding="utf-8", newline="") as bank_file:
         bank_record = (
             f"{reg_number:<4}"         # Registreringsnummer (4 tegn)
             f"{bank_name:<30}"         # Banknavn (30 tegn)
-            f"{bank_address:<50}"      # Bankadresse (50 tegn)
+            f"{bank_address:<51}"      # Bankadresse (50 tegn)
             f"{phone_number:<15}"      # Telefonnummer (15 tegn)
             f"{email:<30}"             # Emailadresse (30 tegn)
         )
@@ -120,7 +120,7 @@ with open(TRANSACTION_FILE, "w", encoding="utf-8", newline="") as file:
             record = (
                 f"{cpr:<15}"             # Kundenummer (CPR-format)
                 f"{navn:<30}"            # Navn
-                f"{adresse:<50}"         # Adresse
+                f"{adresse:<51}"         # Adresse
                 f"{fødselsdato:<11}"     # Fødselsdato (10 tegn + 1 mellemrum)
                 f"{konto_nummer:<14}"    # Kontonummer (12 tegn + 2 mellemrum)
                 f"{reg_nummer:<6}"       # Registreringsnummer

@@ -46,6 +46,7 @@ WORKING-STORAGE SECTION.
 01 ANTAL-BANKER    PIC 9(3) VALUE 0.
 01 IDX-BANK        PIC 9(3) VALUE 0.
 
+
 01 BANK-TABEL.
    02 BANK-POST OCCURS 100 TIMES.
       03 T-REG-NR        PIC X(4).
@@ -59,7 +60,7 @@ WORKING-STORAGE SECTION.
 01 AKT-BANKADRESSE   PIC X(51).
 01 AKT-TELEFON       PIC X(15).
 01 AKT-EMAIL         PIC X(30).
-01 WS-REG-KEY      PIC X(4).
+01 WS-REG-KEY        PIC X(6).
 
 *> Kontogruppering
 01 SIDSTE-KONTO-ID   PIC X(14) VALUE SPACES.
@@ -165,12 +166,11 @@ PROCEDURE DIVISION.
 *>  SKRIV-KONTO-HEADER – én gang pr. konto
 *>-----------------------------------------------------------------
 SKRIV-KONTO-HEADER.
-    *> Forbered REG-NR nøgle (første 4 tegn fra trans-feltet)
-    MOVE REG-NR OF TRANS-REC (1:4) TO WS-REG-KEY
+    *> Forbered REG-NR nøgle (trim alle spaces)
+    MOVE FUNCTION TRIM(REG-NR OF TRANS-REC) TO WS-REG-KEY
 
     *> Find bank på REG-NR
     PERFORM FIND-BANK
-
 
     MOVE SPACES TO OUT-TEXT
     STRING "--------------------------------------------------------"
@@ -251,6 +251,7 @@ SKRIV-KONTO-HEADER.
     END-STRING
     WRITE OUT-REC
     .
+
 
 *>-----------------------------------------------------------------
 *>  BEHANDL-TRANS-LINJE – én linje fra Transaktioner.txt
@@ -351,7 +352,8 @@ FIND-BANK.
     MOVE 1 TO IDX-BANK
 
     PERFORM UNTIL IDX-BANK > ANTAL-BANKER
-        IF T-REG-NR(IDX-BANK) = WS-REG-KEY
+        IF FUNCTION TRIM(T-REG-NR(IDX-BANK)) =
+           FUNCTION TRIM(WS-REG-KEY)
             MOVE T-BANKNAVN    (IDX-BANK) TO AKT-BANKNAVN
             MOVE T-BANKADRESSE (IDX-BANK) TO AKT-BANKADRESSE
             MOVE T-TELEFON     (IDX-BANK) TO AKT-TELEFON
@@ -361,6 +363,7 @@ FIND-BANK.
         ADD 1 TO IDX-BANK
     END-PERFORM
     .
+
 
 
 *>-----------------------------------------------------------------
