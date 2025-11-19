@@ -22,13 +22,13 @@ FILE SECTION.
 
 *> -------- BANKER --------
 FD Bankfil.
-01 RAW-BANK        PIC X(129).      *> 4+30+50+15+30 = 129
+01 RAW-BANK        PIC X(130).      *> 4+30+50+15+30 = 129
 01 BANK-REC REDEFINES RAW-BANK.
    COPY "BANKER.cpy".
 
 *> -------- TRANSAKTIONER --------
 FD Transfil.
-01 RAW-TRANS       PIC X(211).      *> 15+30+50+11+14+6+15+4+20+20+26 = 211
+01 RAW-TRANS       PIC X(212).      *> 15+30+50+11+14+6+15+4+20+20+26 = 211
 01 TRANS-REC REDEFINES RAW-TRANS.
    COPY "TRANSAKTIONER.cpy".
 
@@ -50,13 +50,13 @@ WORKING-STORAGE SECTION.
    02 BANK-POST OCCURS 100 TIMES.
       03 T-REG-NR        PIC X(4).
       03 T-BANKNAVN      PIC X(30).
-      03 T-BANKADRESSE   PIC X(50).
+      03 T-BANKADRESSE   PIC X(51).
       03 T-TELEFON       PIC X(15).
       03 T-EMAIL         PIC X(30).
 
 *> Til opslag under behandling
 01 AKT-BANKNAVN      PIC X(30).
-01 AKT-BANKADRESSE   PIC X(50).
+01 AKT-BANKADRESSE   PIC X(51).
 01 AKT-TELEFON       PIC X(15).
 01 AKT-EMAIL         PIC X(30).
 01 WS-REG-KEY      PIC X(4).
@@ -113,44 +113,45 @@ PROCEDURE DIVISION.
     MOVE "N"    TO EOF-TRANS
     MOVE SPACES TO SIDSTE-KONTO-ID
 
-    PERFORM UNTIL EOF-TRANS = "Y"
+       PERFORM UNTIL EOF-TRANS = "Y"
         READ Transfil
             AT END
                 MOVE "Y" TO EOF-TRANS
             NOT AT END
-            *> Spring helt over tomme linjer (ingen konto, ingen navn)
+                *> Spring helt over tomme linjer (ingen konto, ingen navn)
                 IF KONTO-ID = SPACES AND NAVN = SPACES
                     CONTINUE
                 ELSE
-                *> Ny konto?
-                IF KONTO-ID NOT = SIDSTE-KONTO-ID
+                    *> Ny konto?
+                    IF KONTO-ID NOT = SIDSTE-KONTO-ID
 
-                    *> Hvis det IKKE er første konto: skriv totals for forrige konto
-                    IF SIDSTE-KONTO-ID NOT = SPACES
-                        PERFORM SKRIV-TOTAL-LINJER
+                        *> Hvis det IKKE er første konto: skriv totals for forrige konto
+                        IF SIDSTE-KONTO-ID NOT = SPACES
+                            PERFORM SKRIV-TOTAL-LINJER
 
-                        *> Blank linje mellem kontoudskrifter
-                        MOVE SPACES TO OUT-TEXT
-                        WRITE OUT-REC
-                        WRITE OUT-REC
+                            *> Blank linje mellem kontoudskrifter
+                            MOVE SPACES TO OUT-TEXT
+                            WRITE OUT-REC
+                            WRITE OUT-REC
+                        END-IF
+
+                        MOVE KONTO-ID TO SIDSTE-KONTO-ID
+
+                        *> Reset totals for ny konto
+                        MOVE 0              TO TOTAL-IN-NUM
+                                             TOTAL-UD-NUM
+                        MOVE START-SALDO-DKK TO SALDO-NUM
+
+                        *> Skriv konto-header + bankinfo
+                        PERFORM SKRIV-KONTO-HEADER
                     END-IF
 
-                    MOVE KONTO-ID TO SIDSTE-KONTO-ID
-
-                    *> Reset totals for ny konto
-                    MOVE 0              TO TOTAL-IN-NUM
-                                         TOTAL-UD-NUM
-                    MOVE START-SALDO-DKK TO SALDO-NUM
-
-                    *> Skriv konto-header + bankinfo
-                    PERFORM SKRIV-KONTO-HEADER
+                    *> Behandl én transaktionslinje
+                    PERFORM BEHANDL-TRANS-LINJE
                 END-IF
-
-                *> Behandl én transaktionslinje
-                PERFORM BEHANDL-TRANS-LINJE
-
         END-READ
     END-PERFORM
+
 
     *> Efter løkken: skriv totals for sidste konto (hvis der var nogen)
     IF SIDSTE-KONTO-ID NOT = SPACES

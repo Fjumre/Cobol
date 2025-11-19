@@ -1,138 +1,111 @@
 Top 3 kunder med højeste saldo:
- Kunde-ID: 300455-3208    , Navn: Søren Pedersen               , Saldo:      4,723,954.00 DKK
- Kunde-ID: 080583-1743    , Navn: Søren Olsen                  , Saldo:      4,637,446.00 DKK
- Kunde-ID: 010453-4735    , Navn: Søren Thomsen                , Saldo:      3,950,004.00 DKK
+ Kunde-ID: 010582-2350    , Navn: Marie Jensen                  , Saldo:      3,677,796.74 DKK
+ Kunde-ID: 110494-2456    , Navn: Hanne Olsen                   , Saldo:      3,203,599.71 DKK
+ Kunde-ID: 110494-2456    , Navn: Hanne Olsen                   , Saldo:      3,203,599.71 DKK
 
 Måned       Indbetalinger (DKK)   Udbetalinger (DKK)
-Januar     2,177,068,991.01    2,183,482,582.09
-Februar      189,673,052.26      184,516,477.72
-Marts         99,136,203.62      102,523,243.71
-April         95,427,479.48       81,114,898.89
-Maj           97,641,399.32       81,311,953.86
-Juni          94,639,755.12       95,924,907.92
-Juli         106,662,967.41       93,682,186.45
-August        89,803,126.49       94,763,709.11
-September     91,633,737.01       89,252,766.61
-Oktober      101,749,302.98       86,479,136.04
-November      90,447,772.28       97,853,995.35
-December      93,608,662.62       90,751,961.70
+Januar     2,283,691,181.69    2,318,758,463.38
+Februar      135,985,066.65      149,695,882.84
+Marts        167,179,440.07      143,381,215.39
+April        164,661,433.69      149,035,104.83
+Maj          140,808,087.18      160,182,718.21
+Juni         168,971,096.13      138,679,285.68
+Juli         169,563,993.58      149,491,044.46
+August       159,422,871.57      157,478,985.33
+September    173,851,297.97      160,043,378.28
+Oktober      153,619,604.57      156,586,894.80
+November     161,249,609.01      153,170,575.80
+December     168,901,759.88      153,628,104.73
+
+Mest anvendte transaktionstype pr. måned:
+Måned       Type
+Januar      Overførsel
+Februar     Overførsel
+Marts       Overførsel
+April       Overførsel
+Maj         Overførsel
+Juni        Overførsel
+Juli        Overførsel
+August      Overførsel
+September   Overførsel
+Oktober     Overførsel
+November    Overførsel
+December    Overførsel
 
 Butik                Antal transaktioner
-Supermarked                       870.00
-Tøjbutik                         819.00
-                               45,028.00
-  Apotek                        1,194.00
-  Café                         1,261.00
-  Fitnesscenter                 1,187.00
- Restaurant                     1,837.00
- Fitnesscenter                  1,847.00
- Blomsterhandler                1,770.00
- Biograf                        1,793.00
- Café                          1,836.00
-  Tøjbutik                     1,261.00
-  Restaurant                    1,255.00
- Tøjbutik                      1,769.00
-  Supermarked                   1,181.00
-Bageri                            847.00
- Apotek                         1,802.00
-  Biograf                       1,168.00
-   Tankstation                    328.00
-  Møbelbutik                   1,179.00
-  Boghandel                     1,272.00
-   Bageri                         341.00
-   Restaurant                     346.00
-  Bageri                        1,213.00
-  Tankstation                   1,157.00
-   Apotek                         295.00
-   Café                          310.00
- Bageri                         1,806.00
-Biograf                           901.00
-Restaurant                        879.00
-Boghandel                         870.00
- Elektronikbutik                1,846.00
- Tankstation                    1,819.00
- Boghandel                      1,811.00
- Møbelbutik                    1,833.00
-Blomsterhandler                   932.00
-Apotek                            862.00
-Tankstation                       916.00
-Elektronikbutik                   841.00
-Fitnesscenter                     843.00
-   Blomsterhandler                302.00
- Supermarked                    1,795.00
-   Fitnesscenter                  358.00
-  Blomsterhandler               1,277.00
-   Møbelbutik                    295.00
-   Boghandel                      324.00
-  Elektronikbutik               1,172.00
-Møbelbutik                       916.00
-   Elektronikbutik                306.00
-    Restaurant                     26.00
-    Apotek                         24.00
-Café                             901.00
-    Fitnesscenter                  22.00
-   Tøjbutik                      319.00
-   Biograf                        329.00
-   Supermarked                    294.00
-    Bageri                         18.00
-geri              20                2.00
-kstation         202                3.00
-    Elektronikbutik                25.00
-øbelbutik                          3.00
-    Boghandel                      18.00
-    Biograf                        24.00
-    Blomsterhandler                21.00
-msterhandler     202                1.00
-elbutik          202                2.00
-    Tankstation                    26.00
-    Møbelbutik                    29.00
-ankstation         2                6.00
-    Tøjbutik                      18.00
-�belbutik          2                2.00
-    Supermarked                    20.00
-ek              2023                1.00
-              2025-0                1.00
-tronikbutik     2023                1.00
-afé                                6.00
-    Café                          18.00
-ograf             20                3.00
-potek              2                4.00
-øjbutik                            6.00
-graf             202                3.00
-�jbutik            2                2.00
-ek              2022                1.00
-ktronikbutik     202                1.00
-�                202                3.00
-ermarked         202                2.00
-itnesscenter       2                4.00
-ronikbutik     2020-                1.00
-ektronikbutik     20                1.00
-iograf             2                5.00
-tronikbutik     2021                1.00
-tnesscenter       20                1.00
-estaurant          2                5.00
-oghandel           2                5.00
-permarked         20                2.00
-otek              20                1.00
-nkstation         20                3.00
-lektronikbutik     2                2.00
-sterhandler     2025                1.00
-ageri              2                3.00
-tation         2023-                1.00
-ghandel           20                2.00
-lomsterhandler     2                2.00
-fé                2                1.00
-omsterhandler     20                1.00
-belbutik          20                1.00
-i              2020-                1.00
-jbutik            20                1.00
-staurant          20                1.00
-                2023                1.00
+Restaurant                                1,163
+Boghandel                                 1,163
+Tankstation                               1,213
+Tøjbutik                                 1,069
+Tøjbutik                                 1,809
+Tankstation                               1,824
+Elektronikbutik                           1,768
+Bageri                                    1,732
+Møbelbutik                               1,769
+Apotek                                    1,831
+Boghandel                                 1,699
+Restaurant                                1,788
+Supermarked                               1,796
+Blomsterhandler                           1,181
+Elektronikbutik                           1,125
+Café                                     1,768
+Tøjbutik                                   299
+Møbelbutik                                 281
+Supermarked                               1,145
+Biograf                                   1,792
+Møbelbutik                               1,116
+Café                                     1,187
+Biograf                                   1,130
+Fitnesscenter                             1,139
+Fitnesscenter                             1,756
+Apotek                                    1,114
+Blomsterhandler                           1,822
+afé                                        899
+Apotek                                      269
+Bageri                                    1,150
+Bageri                                      281
+Blomsterhandler                             300
+Fitnesscenter                               288
+Elektronikbutik                             281
+Supermarked                                 280
+Tankstation                                 281
+Biograf                                     276
+Boghandel                                   284
+Bageri                                       21
+Fitnesscenter                                19
+Café                                       252
+Møbelbutik                                   8
+Blomsterhandler                              12
+Biograf                                      18
+Restaurant                                  283
+Tankstation                                  21
+Apotek                                       21
+Supermarked                                  24
+Elektronikbutik                              13
+Restaurant                                   21
+Café                                        17
+Boghandel                                    25
+Tøjbutik                                    15
 
 Top 5 butikker med højeste omsætning (DKK):
- Café                :    244,529,514.82 DKK
- Møbelbutik          :    242,456,845.68 DKK
- Fitnesscenter        :    234,759,632.65 DKK
- Boghandel            :    233,468,999.04 DKK
- Biograf              :    225,582,394.45 DKK
+ Tankstation                         :    380,810,354.56 DKK
+ Apotek                              :    373,314,314.31 DKK
+ Blomsterhandler                     :    368,794,725.14 DKK
+ Fitnesscenter                       :    364,520,509.54 DKK
+ Tøjbutik                           :    360,769,767.06 DKK
+
+Transaktioner pr. måned pr. valuta (i DKK):
+Måned      USD (DKK)        EUR (DKK)        DKK (DKK)
+Januar       1,615,749,923.46    1,656,524,297.38    1,330,175,424.23
+Februar        117,624,741.02      120,529,263.34       47,526,945.13
+Marts          124,936,781.44      134,451,407.59       51,172,466.43
+April          142,124,720.79      124,362,202.01       47,209,615.72
+Maj            114,600,779.47      135,478,150.40       50,911,875.52
+Juni           123,572,868.56      136,345,428.56       47,732,084.69
+Juli           128,098,253.40      141,343,403.15       49,613,381.49
+August         124,370,138.11      142,084,733.03       50,446,985.76
+September      128,131,767.68      156,346,650.04       49,416,258.53
+Oktober        123,117,809.81      136,542,150.96       50,546,538.60
+November       122,991,336.05      141,213,153.22       50,215,695.54
+December       133,424,665.34      135,023,278.98       54,081,920.29
 

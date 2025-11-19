@@ -17,7 +17,7 @@ DATA DIVISION.
 FILE SECTION.
 
 FD Transfil.
-01 RAW-TRANS         PIC X(211).
+01 RAW-TRANS         PIC X(212).
 01 TRANS-REC REDEFINES RAW-TRANS.
    COPY "TRANSAKTIONER.cpy".
 
@@ -29,7 +29,7 @@ WORKING-STORAGE SECTION.
 
 01 EOF-TRANS         PIC X VALUE "N".
 
-*> Startsldo i DKK (pr. kunde)
+*> Startsaldo i DKK (pr. kunde)
 01 START-SALDO-DKK   PIC S9(13)V99 VALUE 50000.00.
 
 *> -------------------------------------------------
@@ -61,7 +61,17 @@ WORKING-STORAGE SECTION.
 01 MND-STR          PIC X(2).
 01 MND-INDEX        PIC 99.
 
-*> Månednavne (simpelt)
+*> Mest anvendte transaktionstype pr. måned
+01 MND-TYPE-IND   OCCURS 12 PIC 9(9)     VALUE 0.
+01 MND-TYPE-UDB   OCCURS 12 PIC 9(9)     VALUE 0.
+01 MND-TYPE-OVF   OCCURS 12 PIC 9(9)     VALUE 0.
+
+01 WS-TYPE-STR    PIC X(20).
+01 TYPE-MAX       PIC 9(9).
+01 TYPE-NAVN      PIC X(20).
+
+
+*> Månednavne til udskrift
 01 MND-NAVNE.
    02 MND1          PIC X(9) VALUE "Januar".
    02 MND2          PIC X(9) VALUE "Februar".
@@ -83,10 +93,12 @@ WORKING-STORAGE SECTION.
 01 ANTAL-BUTIKKER   PIC 9(4) VALUE 0.
 01 IDX-BUTIK        PIC 9(4) VALUE 0.
 01 LOOP-BUTIK       PIC 9(4) VALUE 0.
+01 WS-BUTIK-NAVN   PIC X(35).
+01 WS-DIGIT-COUNT  PIC 9(4).
 
 01 BUTIK-TABEL.
    02 BUTIK-POST OCCURS 500 TIMES.
-      03 B-NAVN    PIC X(20).
+      03 B-NAVN    PIC X(35).
       03 B-ANTAL   PIC 9(9).
       03 B-OMS-NUM PIC S9(15)V99.
 
@@ -108,6 +120,17 @@ WORKING-STORAGE SECTION.
 01 SALDO-EDIT        PIC ZZ,ZZZ,ZZZ,ZZ9.99.
 01 NUM-EDIT1         PIC ZZ,ZZZ,ZZZ,ZZ9.99.
 01 NUM-EDIT2         PIC ZZ,ZZZ,ZZZ,ZZ9.99.
+01 NUM-ANTAL-EDIT    PIC Z,ZZZ,ZZ9. 
+
+*> Valuta-omsætning pr. måned (i DKK)
+01 MND-USD-DKK    OCCURS 12 PIC S9(15)V99 VALUE 0.
+01 MND-EUR-DKK    OCCURS 12 PIC S9(15)V99 VALUE 0.
+01 MND-DKK-DKK    OCCURS 12 PIC S9(15)V99 VALUE 0.
+
+01 TEMP-DKK       PIC S9(15)V99.
+
+*> Ekstra formattering til valuta-tabel
+01 NUM-EDIT3      PIC ZZ,ZZZ,ZZZ,ZZ9.99.
 
 *> =================================================
 PROCEDURE DIVISION.
@@ -130,8 +153,10 @@ PROCEDURE DIVISION.
 
     PERFORM SKRIV-TOP-3-KUNDER
     PERFORM SKRIV-MND-STATISTIK
+    PERFORM SKRIV-MND-TYPE-STAT
     PERFORM SKRIV-BUTIK-STATISTIK
     PERFORM SKRIV-TOP-5-BUTIKKER
+    PERFORM SKRIV-MND-VALUTA-TABEL
 
     CLOSE Transfil UdFil
     STOP RUN.
@@ -167,13 +192,22 @@ FIND-ELLER-OPRET-KUNDE.
     END-PERFORM
 
     IF IDX-KUNDE > ANTAL-KUNDER
-        ADD 1 TO ANTAL-KUNDER
-        MOVE ANTAL-KUNDER   TO IDX-KUNDE
-        MOVE CPR            TO K-CPR  (IDX-KUNDE)
-        MOVE NAVN           TO K-NAVN (IDX-KUNDE)
-        MOVE START-SALDO-DKK TO K-SALDO(IDX-KUNDE)
+        *> Ny kunde – men pas på max 15000
+        IF ANTAL-KUNDER < 15000
+            ADD 1 TO ANTAL-KUNDER
+            MOVE ANTAL-KUNDER   TO IDX-KUNDE
+            MOVE CPR            TO K-CPR  (IDX-KUNDE)
+            MOVE NAVN           TO K-NAVN (IDX-KUNDE)
+            MOVE START-SALDO-DKK TO K-SALDO(IDX-KUNDE)
+        ELSE
+            *> Vi har ikke plads til flere – brug sidste plads som "overflow"
+            MOVE 15000 TO IDX-KUNDE
+            *> (valgfrit) DISPLAY en advarsel:
+            *> DISPLAY "ADVARSEL: For mange kunder, resterende samles i indeks 15000".
+        END-IF
     END-IF
     .
+
 
 *>--------------------------------------------------
 *>  OPDATER-MND-STAT – ind/udbetaling pr. måned
@@ -198,12 +232,44 @@ OPDATER-MND-STAT.
         WHEN OTHER MOVE 1 TO MND-INDEX
     END-EVALUATE
 
+    *> 1) Indbetaling / udbetaling pr. måned (som før)
     IF BELØB-DKK-NUM > 0
         ADD BELØB-DKK-NUM TO MND-IN-BELØB(MND-INDEX)
     ELSE
         ADD BELØB-DKK-NUM TO MND-UD-BELØB(MND-INDEX)
     END-IF
+
+    *> 2) Mest anvendte transaktionstype pr. måned
+    MOVE FUNCTION TRIM(TRANSAKTIONSTYPE) TO WS-TYPE-STR
+
+    EVALUATE WS-TYPE-STR
+        WHEN "Indbetaling"
+            ADD 1 TO MND-TYPE-IND(MND-INDEX)
+        WHEN "Udbetaling"
+            ADD 1 TO MND-TYPE-UDB(MND-INDEX)
+        WHEN "Overførsel"
+            ADD 1 TO MND-TYPE-OVF(MND-INDEX)
+        WHEN OTHER
+            *> Hvis noget andet dukker op, regn det som Overførsel
+            ADD 1 TO MND-TYPE-OVF(MND-INDEX)
+    END-EVALUATE
+
+    *> 3) Valuta-omsætning pr. måned (USD/EUR/DKK) – i DKK
+    MOVE BELØB-DKK-NUM TO TEMP-DKK
+    IF TEMP-DKK < 0
+        COMPUTE TEMP-DKK = -TEMP-DKK
+    END-IF
+
+    EVALUATE FUNCTION TRIM(VALUTA)
+        WHEN "USD"
+            ADD TEMP-DKK TO MND-USD-DKK(MND-INDEX)
+        WHEN "EUR"
+            ADD TEMP-DKK TO MND-EUR-DKK(MND-INDEX)
+        WHEN OTHER
+            ADD TEMP-DKK TO MND-DKK-DKK(MND-INDEX)
+    END-EVALUATE
     .
+
 
 *>--------------------------------------------------
 *>  OPDATER-BUTIK-STAT – tæller og omsætning
@@ -231,13 +297,21 @@ FIND-ELLER-OPRET-BUTIK.
     END-PERFORM
 
     IF IDX-BUTIK > ANTAL-BUTIKKER
-        ADD 1 TO ANTAL-BUTIKKER
-        MOVE ANTAL-BUTIKKER TO IDX-BUTIK
-        MOVE BUTIK          TO B-NAVN(IDX-BUTIK)
-        MOVE 0              TO B-ANTAL(IDX-BUTIK)
-        MOVE 0              TO B-OMS-NUM(IDX-BUTIK)
+        *> Ny butik – men max 500
+        IF ANTAL-BUTIKKER < 500
+            ADD 1 TO ANTAL-BUTIKKER
+            MOVE ANTAL-BUTIKKER TO IDX-BUTIK
+            MOVE BUTIK          TO B-NAVN(IDX-BUTIK)
+            MOVE 0              TO B-ANTAL(IDX-BUTIK)
+            MOVE 0              TO B-OMS-NUM(IDX-BUTIK)
+        ELSE
+            *> Overflow-butik – saml resten i indeks 500
+            MOVE 500 TO IDX-BUTIK
+            *> (valgfrit) DISPLAY "ADVARSEL: For mange butikker, resterende samles i indeks 500".
+        END-IF
     END-IF
     .
+
 
 *>--------------------------------------------------
 *>  CONVERT-TO-DKK – beløb + valuta -> DKK
@@ -311,8 +385,16 @@ BEREGN-TOP-5-BUTIKKER.
                 ADD 1 TO LOOP-J
             END-PERFORM
 
+            *> Trim navnet én gang til WS-BUTIK-NAVN
+            MOVE FUNCTION TRIM(B-NAVN(LOOP-BUTIK)) TO WS-BUTIK-NAVN
+
             IF ALREADY-USED = "N"
                AND B-OMS-NUM(LOOP-BUTIK) > BEST-OMS
+               AND WS-BUTIK-NAVN NOT = SPACES
+               AND WS-BUTIK-NAVN(1:1) NOT = "2"
+               AND WS-BUTIK-NAVN(1:1) NOT = "0"
+               AND WS-BUTIK-NAVN(1:1) NOT = "-"
+            THEN
                 MOVE B-OMS-NUM(LOOP-BUTIK) TO BEST-OMS
                 MOVE LOOP-BUTIK            TO BEST-BUTIK-IDX
             END-IF
@@ -458,6 +540,141 @@ SKRIV-MND-STATISTIK.
     .
 
 *>--------------------------------------------------
+*>  SKRIV-MND-TYPE-STAT – mest anvendte type pr. måned
+*>--------------------------------------------------
+SKRIV-MND-TYPE-STAT.
+    MOVE SPACES TO OUT-TEXT
+    STRING
+        "Mest anvendte transaktionstype pr. måned:"
+        DELIMITED BY SIZE
+    INTO OUT-TEXT
+    END-STRING
+    WRITE OUT-REC
+
+    MOVE SPACES TO OUT-TEXT
+    STRING
+        "Måned       Type"
+        DELIMITED BY SIZE
+    INTO OUT-TEXT
+    END-STRING
+    WRITE OUT-REC
+
+    MOVE 1 TO MND-INDEX
+    PERFORM UNTIL MND-INDEX > 12
+
+        *> Vælg månednavn
+        EVALUATE MND-INDEX
+            WHEN 1  MOVE MND1  TO WS-MND-NAVN
+            WHEN 2  MOVE MND2  TO WS-MND-NAVN
+            WHEN 3  MOVE MND3  TO WS-MND-NAVN
+            WHEN 4  MOVE MND4  TO WS-MND-NAVN
+            WHEN 5  MOVE MND5  TO WS-MND-NAVN
+            WHEN 6  MOVE MND6  TO WS-MND-NAVN
+            WHEN 7  MOVE MND7  TO WS-MND-NAVN
+            WHEN 8  MOVE MND8  TO WS-MND-NAVN
+            WHEN 9  MOVE MND9  TO WS-MND-NAVN
+            WHEN 10 MOVE MND10 TO WS-MND-NAVN
+            WHEN 11 MOVE MND11 TO WS-MND-NAVN
+            WHEN 12 MOVE MND12 TO WS-MND-NAVN
+        END-EVALUATE
+
+        *> Find hvilken type der er størst
+        MOVE 0          TO TYPE-MAX
+        MOVE SPACES     TO TYPE-NAVN
+
+        IF MND-TYPE-IND(MND-INDEX) > TYPE-MAX
+            MOVE MND-TYPE-IND(MND-INDEX) TO TYPE-MAX
+            MOVE "Indbetaling"           TO TYPE-NAVN
+        END-IF
+
+        IF MND-TYPE-UDB(MND-INDEX) > TYPE-MAX
+            MOVE MND-TYPE-UDB(MND-INDEX) TO TYPE-MAX
+            MOVE "Udbetaling"            TO TYPE-NAVN
+        END-IF
+
+        IF MND-TYPE-OVF(MND-INDEX) > TYPE-MAX
+            MOVE MND-TYPE-OVF(MND-INDEX) TO TYPE-MAX
+            MOVE "Overførsel"            TO TYPE-NAVN
+        END-IF
+
+        MOVE SPACES TO OUT-TEXT
+        STRING
+            WS-MND-NAVN DELIMITED BY SIZE
+            "   "       DELIMITED BY SIZE
+            TYPE-NAVN   DELIMITED BY SIZE
+        INTO OUT-TEXT
+        END-STRING
+        WRITE OUT-REC
+
+        ADD 1 TO MND-INDEX
+    END-PERFORM
+
+    MOVE SPACES TO OUT-TEXT
+    WRITE OUT-REC
+    .
+
+*>--------------------------------------------------
+*>  SKRIV-MND-VALUTA-TABEL – USD/EUR/DKK pr. måned
+*>--------------------------------------------------
+SKRIV-MND-VALUTA-TABEL.
+    MOVE SPACES TO OUT-TEXT
+    STRING
+        "Transaktioner pr. måned pr. valuta (i DKK):"
+        DELIMITED BY SIZE
+    INTO OUT-TEXT
+    END-STRING
+    WRITE OUT-REC
+
+    MOVE SPACES TO OUT-TEXT
+    STRING
+        "Måned      USD (DKK)        EUR (DKK)        DKK (DKK)"
+        DELIMITED BY SIZE
+    INTO OUT-TEXT
+    END-STRING
+    WRITE OUT-REC
+
+    MOVE 1 TO MND-INDEX
+    PERFORM UNTIL MND-INDEX > 12
+        EVALUATE MND-INDEX
+            WHEN 1  MOVE MND1  TO WS-MND-NAVN
+            WHEN 2  MOVE MND2  TO WS-MND-NAVN
+            WHEN 3  MOVE MND3  TO WS-MND-NAVN
+            WHEN 4  MOVE MND4  TO WS-MND-NAVN
+            WHEN 5  MOVE MND5  TO WS-MND-NAVN
+            WHEN 6  MOVE MND6  TO WS-MND-NAVN
+            WHEN 7  MOVE MND7  TO WS-MND-NAVN
+            WHEN 8  MOVE MND8  TO WS-MND-NAVN
+            WHEN 9  MOVE MND9  TO WS-MND-NAVN
+            WHEN 10 MOVE MND10 TO WS-MND-NAVN
+            WHEN 11 MOVE MND11 TO WS-MND-NAVN
+            WHEN 12 MOVE MND12 TO WS-MND-NAVN
+        END-EVALUATE
+
+        MOVE MND-USD-DKK(MND-INDEX) TO NUM-EDIT1
+        MOVE MND-EUR-DKK(MND-INDEX) TO NUM-EDIT2
+        MOVE MND-DKK-DKK(MND-INDEX) TO NUM-EDIT3
+
+        MOVE SPACES TO OUT-TEXT
+        STRING
+            WS-MND-NAVN DELIMITED BY SIZE
+            "   "       DELIMITED BY SIZE
+            NUM-EDIT1   DELIMITED BY SIZE
+            "   "       DELIMITED BY SIZE
+            NUM-EDIT2   DELIMITED BY SIZE
+            "   "       DELIMITED BY SIZE
+            NUM-EDIT3   DELIMITED BY SIZE
+        INTO OUT-TEXT
+        END-STRING
+        WRITE OUT-REC
+
+        ADD 1 TO MND-INDEX
+    END-PERFORM
+
+    MOVE SPACES TO OUT-TEXT
+    WRITE OUT-REC
+    .
+
+*>--------------------------------------------------
 *>  SKRIV-BUTIK-STATISTIK – antal pr. butik
 *>--------------------------------------------------
 SKRIV-BUTIK-STATISTIK.
@@ -471,16 +688,33 @@ SKRIV-BUTIK-STATISTIK.
 
     MOVE 1 TO LOOP-BUTIK
     PERFORM UNTIL LOOP-BUTIK > ANTAL-BUTIKKER
-        MOVE B-ANTAL(LOOP-BUTIK) TO NUM-EDIT1
 
-        MOVE SPACES TO OUT-TEXT
-        STRING
-            B-NAVN(LOOP-BUTIK) DELIMITED BY SIZE
-            "   "              DELIMITED BY SIZE
-            NUM-EDIT1          DELIMITED BY SIZE
-        INTO OUT-TEXT
-        END-STRING
-        WRITE OUT-REC
+        *> Trim
+        MOVE FUNCTION TRIM(B-NAVN(LOOP-BUTIK)) TO WS-BUTIK-NAVN
+
+        *> Tæl cifre
+        MOVE 0 TO WS-DIGIT-COUNT
+        INSPECT WS-BUTIK-NAVN
+           TALLYING WS-DIGIT-COUNT
+             FOR ALL "0" "1" "2" "3" "4" "5" "6" "7" "8" "9"
+
+        IF WS-BUTIK-NAVN NOT = SPACES
+           AND B-ANTAL(LOOP-BUTIK) > 0
+           AND WS-DIGIT-COUNT = 0
+           AND WS-BUTIK-NAVN(1:1) IS ALPHABETIC
+           AND FUNCTION LENGTH(WS-BUTIK-NAVN) > 3
+        THEN
+            MOVE B-ANTAL(LOOP-BUTIK) TO NUM-ANTAL-EDIT
+
+            MOVE SPACES TO OUT-TEXT
+            STRING
+                WS-BUTIK-NAVN    DELIMITED BY SIZE
+                "   "            DELIMITED BY SIZE
+                NUM-ANTAL-EDIT   DELIMITED BY SIZE
+            INTO OUT-TEXT
+            END-STRING
+            WRITE OUT-REC
+        END-IF
 
         ADD 1 TO LOOP-BUTIK
     END-PERFORM
@@ -488,6 +722,8 @@ SKRIV-BUTIK-STATISTIK.
     MOVE SPACES TO OUT-TEXT
     WRITE OUT-REC
     .
+
+
 
 *>--------------------------------------------------
 *>  SKRIV-TOP-5-BUTIKKER – på omsætning
