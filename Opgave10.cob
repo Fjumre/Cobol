@@ -28,7 +28,7 @@ FD Bankfil.
 
 *> -------- TRANSAKTIONER --------
 FD Transfil.
-01 RAW-TRANS       PIC X(213).      *> 15+30+50+11+14+6+15+4+20+20+26 = 211
+01 RAW-TRANS       PIC X(215).      *> 15+30+50+11+14+6+15+4+20+20+26 = 211
 01 TRANS-REC REDEFINES RAW-TRANS.
    COPY "TRANSAKTIONER.cpy".
 

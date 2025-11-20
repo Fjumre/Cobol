@@ -85,7 +85,7 @@ def generate_bank_data():
 
 # Generér bankfil
 bank_data = generate_bank_data()
-with open(BANK_FILE, "w", encoding="utf-8", newline="") as bank_file:
+with open(BANK_FILE, "w", encoding="cp1252", newline="") as bank_file:
     for reg_number, bank_name, bank_address, phone_number, email in bank_data:
         bank_record = (
             f"{reg_number:<4}"         # Registreringsnummer (4 tegn)
@@ -99,7 +99,7 @@ with open(BANK_FILE, "w", encoding="utf-8", newline="") as bank_file:
 # Generér transaktionsfil
 bank_registrations = [bank[0] for bank in bank_data]  # Liste med alle registreringsnumre fra bankfilen
 
-with open(TRANSACTION_FILE, "w", encoding="utf-8", newline="") as file:
+with open(TRANSACTION_FILE, "w", encoding="cp1252", newline="") as file:
     for i in range(1, NUM_CUSTOMERS + 1):  # Loop over kunder
         cpr, fødselsdato = generate_cpr()  # Generér CPR og fødselsdato
         konto_nummer = generate_account_number()  # Generér kontonummer
@@ -119,7 +119,7 @@ with open(TRANSACTION_FILE, "w", encoding="utf-8", newline="") as file:
             # Formatér feltet til faste kolonner
             record = (
                 f"{cpr:<15}"             # Kundenummer (CPR-format)
-                f"{navn:<30}"            # Navn
+                f"{navn:<31}"            # Navn
                 f"{adresse:<51}"         # Adresse
                 f"{fødselsdato:<11}"     # Fødselsdato (10 tegn + 1 mellemrum)
                 f"{konto_nummer:<14}"    # Kontonummer (12 tegn + 2 mellemrum)
@@ -127,7 +127,7 @@ with open(TRANSACTION_FILE, "w", encoding="utf-8", newline="") as file:
                 f"{transaktions_beløb:>15.2f}"  # Højrestil beløb
                 f"{valutakode:<4}"       # Valutakode
                 f"{transaktions_type:<20}"  # Transaktionstype
-                f"{butik:<20}"           # Butik
+                f"{butik:<22}"           # Butik
                 f"{timestamp:<26}"       # Timestamp
             )
             file.write(record + "\n")  # Skriv til fil og tilføj ny linje
