@@ -1,0 +1,73 @@
+>>SOURCE FORMAT FREE
+IDENTIFICATION DIVISION.
+PROGRAM-ID. LOAD-BANKER.
+
+ENVIRONMENT DIVISION.
+INPUT-OUTPUT SECTION.
+FILE-CONTROL.
+    SELECT Bankfil ASSIGN TO "Banker.txt"
+        ORGANIZATION IS LINE SEQUENTIAL.
+
+DATA DIVISION.
+FILE SECTION.
+FD Bankfil.
+01 RAW-BANK     PIC X(130).
+01 BANK-REC REDEFINES RAW-BANK.
+   COPY "BANKER.cpy".
+
+WORKING-STORAGE SECTION.
+01 EOF-BANK     PIC X VALUE "N".
+
+* Command buffer to call sqlite3
+01 CMD-LINE     PIC X(400).
+
+* Trimmed fields
+01 T-REG-NR       PIC X(10).
+01 T-BANKNAVN     PIC X(40).
+01 T-BANKADR      PIC X(80).
+01 T-TELEFON      PIC X(30).
+01 T-EMAIL        PIC X(60).
+
+PROCEDURE DIVISION.
+    OPEN INPUT Bankfil
+
+    PERFORM UNTIL EOF-BANK = "Y"
+        READ Bankfil
+            AT END
+                MOVE "Y" TO EOF-BANK
+            NOT AT END
+                PERFORM BEHANDL-BANK-REC
+        END-READ
+    END-PERFORM
+
+    CLOSE Bankfil
+    STOP RUN.
+
+BEHANDL-BANK-REC.
+    * Trim fields
+    MOVE FUNCTION TRIM(REG-NR)      TO T-REG-NR
+    MOVE FUNCTION TRIM(BANKNAVN)    TO T-BANKNAVN
+    MOVE FUNCTION TRIM(BANKADRESSE) TO T-BANKADR
+    MOVE FUNCTION TRIM(TELEFON)     TO T-TELEFON
+    MOVE FUNCTION TRIM(EMAIL)       TO T-EMAIL
+
+    IF T-REG-NR = SPACES
+        EXIT PARAGRAPH
+    END-IF
+
+    * Build: sqlite3 bank.db "INSERT INTO banker (...) VALUES ('...','...');"
+    MOVE SPACES TO CMD-LINE
+    STRING
+        "sqlite3 bank.db ""INSERT INTO banker (reg_nr, banknavn, bankadresse, telefon, email) VALUES ('"
+        T-REG-NR     "', '"
+        T-BANKNAVN   "', '"
+        T-BANKADR    "', '"
+        T-TELEFON    "', '"
+        T-EMAIL      "');"""
+        DELIMITED BY SIZE
+    INTO CMD-LINE
+    END-STRING
+
+    CALL "SYSTEM" USING CMD-LINE
+    .
+END PROGRAM LOAD-BANKER.

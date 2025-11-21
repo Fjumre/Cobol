@@ -1,26 +1,18 @@
 FROM debian:latest
 
-# Install tools needed for building OCESQL
+# Install GnuCOBOL + SQLite CLI + dev libs
 RUN apt-get update && apt-get install -y \
     gnucobol \
     sqlite3 \
+    libsqlite3-dev \
     build-essential \
-    autoconf \
-    automake \
-    libtool \
-    git \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Download and build OCESQL (COBOL + SQLite precompiler)
-RUN git clone https://github.com/opensourcecobol/opensource-cobol-esql.git /tmp/ocesql && \
-    cd /tmp/ocesql && \
-    ./autogen.sh && \
-    ./configure && \
-    make && \
-    make install
-
-# Create folder for COBOL + database files
+# Work directory inside container
 WORKDIR /app
 
-# Default command (you will override this when running)
+# Copy everything (COBOL, txt, schema.sql) into the image
+COPY . /app
+
+# By default we just drop into a shell; you can override with docker run
 CMD ["/bin/bash"]
