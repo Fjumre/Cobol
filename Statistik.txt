@@ -1,71 +1,72 @@
 Top 3 kunder med højeste saldo:
- Kunde-ID: 201295-5650    , Navn: Jens Mortensen                , Saldo:      4,834,724.10 DKK
- Kunde-ID: 300862-8449    , Navn: Jens Hansen                   , Saldo:      3,847,030.97 DKK
- Kunde-ID: 281297-1619    , Navn: Mette Mortensen               , Saldo:      3,706,572.74 DKK
+ Kunde-ID: 060359-6625    , Navn: Søren Jensen                 , Saldo:      3,848,293.00 DKK
+ Kunde-ID: 060581-8587    , Navn: Søren Mortensen              , Saldo:      3,842,491.00 DKK
+ Kunde-ID: 020156-6689    , Navn: Søren Olsen                  , Saldo:      3,168,533.00 DKK
 
 Måned       Indbetalinger (DKK)   Udbetalinger (DKK)
-Januar       595,759,800.35      586,048,787.94
-Februar      553,487,929.72      553,325,918.56
-Marts        611,985,561.57      595,534,518.02
-April        560,351,395.27      556,432,694.08
-Maj          608,344,908.69      605,626,736.16
-Juni         566,893,741.43      571,550,847.05
-Juli         589,328,691.55      588,793,876.12
-August       604,306,626.46      590,401,072.38
-September    575,023,224.66      560,583,920.29
-Oktober      573,494,744.56      595,748,131.76
-November     605,720,038.20      592,911,100.93
-December     610,957,215.34      593,780,653.97
+Januar     2,196,651,137.63    2,187,431,377.77
+Februar      185,320,829.21      181,132,513.98
+Marts         97,656,016.25       98,104,040.78
+April         91,904,616.96       84,589,821.14
+Maj           89,988,828.95      103,657,561.62
+Juni          79,957,515.35       89,500,182.23
+Juli         101,854,620.83       94,914,013.60
+August        79,052,601.33       94,883,685.29
+September     92,759,459.47       99,027,979.87
+Oktober      103,974,036.13       90,139,821.02
+November      84,574,282.75       96,731,080.87
+December      92,425,504.24       91,271,887.55
 
 Mest anvendte transaktionstype pr. måned:
 Måned       Type
-Januar      Udbetaling
-Februar     Udbetaling
-Marts       Udbetaling
-April       Overførsel
-Maj         Udbetaling
-Juni        Udbetaling
-Juli        Overførsel
-August      Overførsel
-September   Udbetaling
-Oktober     Overførsel
+Januar      Overførsel
+Februar     Overførsel
+Marts       Indbetaling
+April       Udbetaling
+Maj         Indbetaling
+Juni        Indbetaling
+Juli        Udbetaling
+August      Udbetaling
+September   Indbetaling
+Oktober     Indbetaling
 November    Indbetaling
-December    Udbetaling
+December    Indbetaling
 
 Butik                Antal transaktioner
-Biograf                                   4,192
-Boghandel                                 4,204
-Supermarked                               4,215
-Apotek                                    4,285
-Caf�                                      4,305
-Elektronikbutik                           4,198
-Blomsterhandler                           4,206
-M�belbutik                                4,117
-Fitnesscenter                             4,283
-Restaurant                                4,205
-Bageri                                    4,200
-Tankstation                               4,220
-T�jbutik                                  4,244
+Biograf                                    4223
+Bageri                                     4273
+Tankstation                                4221
+Restaurant                                 4262
+Elektronikbutik                            4286
+Supermarked                                4228
+Boghandel                                  4166
+Tøjbutik                                  4238
+Apotek                                     4264
+Fitnesscenter                              4238
+Møbelbutik                                4205
+Café                                      4133
+Blomsterhandler                            4231
+afé                                          6
 
 Top 5 butikker med højeste omsætning (DKK):
- Apotek                              :  1,125,208,187.12 DKK
- Restaurant                          :  1,100,749,254.72 DKK
- Fitnesscenter                       :  1,100,395,514.25 DKK
- Caf�                                :  1,092,464,542.26 DKK
- T�jbutik                            :  1,086,219,796.57 DKK
+ Biograf                             :    523,364,748.56 DKK
+ Elektronikbutik                     :    517,353,651.62 DKK
+ Apotek                              :    516,291,052.86 DKK
+ Fitnesscenter                       :    515,833,725.64 DKK
+ Restaurant                          :    514,237,932.67 DKK
 
 Transaktioner pr. måned pr. valuta (i DKK):
 Måned      USD (DKK)        EUR (DKK)        DKK (DKK)
-Januar         543,698,168.56      558,736,390.83       79,374,028.90
-Februar        480,868,504.83      554,432,077.22       71,513,266.23
-Marts          520,416,540.08      608,119,361.70       78,984,177.81
-April          470,686,328.69      571,840,792.87       74,256,967.79
-Maj            537,032,780.73      601,141,249.10       75,797,615.02
-Juni           482,255,940.73      583,893,324.63       72,295,323.12
-Juli           531,960,438.35      568,572,314.49       77,589,814.83
-August         522,685,783.43      594,122,629.88       77,899,285.53
-September      504,232,185.84      555,645,933.97       75,729,025.14
-Oktober        523,340,325.91      569,283,135.82       76,619,414.59
-November       544,989,374.15      577,351,609.31       76,290,155.67
-December       535,496,569.77      594,837,324.04       74,403,975.50
+Januar       1,049,049,813.45    1,126,401,912.68    2,208,630,789.27
+Februar         91,594,721.89       74,083,055.85      200,775,565.45
+Marts           87,352,106.37       95,170,401.57       13,237,549.09
+April           83,602,174.10       80,816,432.77       12,075,831.23
+Maj             78,021,088.20      104,969,597.12       10,655,705.25
+Juni            80,733,436.57       76,007,549.85       12,716,711.16
+Juli            86,620,596.37       97,246,271.57       12,901,766.49
+August          70,463,274.44       91,027,820.00       12,445,192.18
+September       80,096,467.31      100,580,554.39       11,110,417.64
+Oktober         89,191,741.04       91,637,346.69       13,284,769.42
+November        81,374,964.86       88,229,157.35       11,701,241.41
+December        73,970,591.28       97,064,631.44       12,662,169.07
 

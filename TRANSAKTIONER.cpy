@@ -1,6 +1,6 @@
    02 CPR                PIC X(15).
-   02 NAVN               PIC X(31).
-   02 ADRESSE            PIC X(51).
+   02 NAVN               PIC X(32).
+   02 ADRESSE            PIC X(52).
    02 FØDSELSDATO        PIC X(11).
    02 KONTO-ID           PIC X(14).
    02 REG-NR             PIC X(6).
