@@ -323,15 +323,8 @@ CONVERT-TO-DKK.
 
     MOVE FUNCTION TRIM(VALUTA) TO WS-VALUTA-TRIM
 
-    *> Tag de sidste 3 karakterer (hvis der er så mange)
-    IF FUNCTION LENGTH(WS-VALUTA-TRIM) >= 3
-        MOVE WS-VALUTA-TRIM(
-             FUNCTION LENGTH(WS-VALUTA-TRIM) - 2:3
-             )
-          TO WS-VALUTA-CODE
-    ELSE
+    
         MOVE WS-VALUTA-TRIM TO WS-VALUTA-CODE
-    END-IF
 
     EVALUATE WS-VALUTA-CODE
         WHEN "USD"
