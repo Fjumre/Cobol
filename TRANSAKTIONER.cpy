@@ -7,5 +7,5 @@
    02 BELØB-TEXT         PIC X(15).
    02 VALUTA             PIC X(4).
    02 TRANSAKTIONSTYPE   PIC X(20).
-   02 BUTIK              PIC X(22).
+   02 BUTIK              PIC X(23).
    02 TIDSPUNKT          PIC X(26).

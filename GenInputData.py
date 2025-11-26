@@ -127,7 +127,7 @@ with open(TRANSACTION_FILE, "w", encoding="UTF-8", newline="") as file:
                 f"{transaktions_beløb:>15.2f}"  # Højrestil beløb
                 f"{valutakode:<4}"       # Valutakode
                 f"{transaktions_type:<20}"  # Transaktionstype
-                f"{butik:<22}"           # Butik
+                f"{butik:<23}"           # Butik
                 f"{timestamp:<26}"       # Timestamp
             )
             file.write(record + "\n")  # Skriv til fil og tilføj ny linje
